@@ -18,12 +18,13 @@ RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /app/miniconda3
 ENV PATH /app/miniconda3/bin:$PATH
 # update conda to its latest version anyways
 RUN conda update -n base -c defaults conda
-RUN conda env create -n mitsuba2 python=3.6 jupyterlab
+RUN conda create -n mitsuba2 python=3.6 jupyterlab
 # initialize the bash shell for later use
 RUN conda init bash
 # add wheels for pytorch and tensorflow
 # This command means: all next occurences of RUN in this Dockerfile use core conda env
 SHELL ["conda", "run", "-n", "mitsuba2", "/bin/bash", "-c"]
+RUN pip install jupyterlab
 
 # Install optix7
 RUN chmod +x NVIDIA-OptiX-SDK-7.0.0-linux64.sh && ./NVIDIA-OptiX-SDK-7.0.0-linux64.sh
