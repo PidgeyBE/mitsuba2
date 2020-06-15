@@ -18,7 +18,7 @@ RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /app/miniconda3
 ENV PATH /app/miniconda3/bin:$PATH
 # update conda to its latest version anyways
 RUN conda update -n base -c defaults conda
-RUN conda create -n mitsuba2 python=3.6 jupyterlab
+RUN conda create -n mitsuba2 python=3.6 jupyterlab pytest pytest-xdist
 # initialize the bash shell for later use
 RUN conda init bash
 # add wheels for pytorch and tensorflow
@@ -27,7 +27,7 @@ SHELL ["conda", "run", "-n", "mitsuba2", "/bin/bash", "-c"]
 RUN pip install jupyterlab
 
 # Install optix7
-RUN chmod +x NVIDIA-OptiX-SDK-7.0.0-linux64.sh && ./NVIDIA-OptiX-SDK-7.0.0-linux64.sh
+RUN chmod +x NVIDIA-OptiX-SDK-7.0.0-linux64.sh && ./NVIDIA-OptiX-SDK-7.0.0-linux64.sh --skip-license
 
 # Mitsuba2 Build
 RUN git clone --recursive https://github.com/mitsuba-renderer/mitsuba2 && cd mitsuba2 && git submodule update --init --recursive
@@ -35,6 +35,7 @@ WORKDIR /app/mitsuba2
 RUN cp resources/mitsuba.conf.template mitsuba.conf
 # Set Mitsuba flavours
 RUN sed -i '0,/"scalar_spectral"/s//"scalar_spectral","gpu_autodiff_mono","gpu_autodiff_rgb"/' mitsuba.conf
+RUN cat mitsuba.conf
 
 # BUILD
 RUN export CC=clang-9 && export CXX=clang++-9 && mkdir build && cd build && \
