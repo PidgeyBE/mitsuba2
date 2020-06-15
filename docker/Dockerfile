@@ -34,11 +34,11 @@ RUN git clone --recursive https://github.com/mitsuba-renderer/mitsuba2 && cd mit
 WORKDIR /app/mitsuba2
 RUN cp resources/mitsuba.conf.template mitsuba.conf
 # Set Mitsuba flavours
-RUN sed -i '0,/"scalar_spectral"/s//"scalar_spectral", "gpu_autodiff_mono", "gpu_autodiff_rgb"/' mitsuba.conf
+RUN sed -i '0,/"scalar_spectral"/s//"scalar_spectral","gpu_autodiff_mono","gpu_autodiff_rgb"/' mitsuba.conf
 
 # BUILD
 RUN export CC=clang-9 && export CXX=clang++-9 && mkdir build && cd build && \
-    cmake -GNinja ..-DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc && \
+    cmake -GNinja .. -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc && \
     ninja
 
 RUN source setpath.sh
