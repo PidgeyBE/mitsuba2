@@ -27,7 +27,8 @@ SHELL ["conda", "run", "-n", "mitsuba2", "/bin/bash", "-c"]
 RUN pip install jupyterlab
 
 # Install optix7
-RUN chmod +x NVIDIA-OptiX-SDK-7.0.0-linux64.sh && ./NVIDIA-OptiX-SDK-7.0.0-linux64.sh --skip-license
+RUN chmod +x NVIDIA-OptiX-SDK-7.0.0-linux64.sh && mkdir optix && \
+    ./NVIDIA-OptiX-SDK-7.0.0-linux64.sh --skip-license --prefix=optix --exclude-subdir
 
 # Mitsuba2 Build
 RUN git clone --recursive https://github.com/mitsuba-renderer/mitsuba2 && cd mitsuba2 && git submodule update --init --recursive
@@ -39,7 +40,7 @@ RUN cat mitsuba.conf
 
 # BUILD
 RUN export CC=clang-9 && export CXX=clang++-9 && mkdir build && cd build && \
-    cmake -GNinja .. -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc && \
+    cmake -GNinja .. -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DMTS_OPTIX_PATH=/app/optix && \
     ninja
 
 RUN source setpath.sh
