@@ -32,7 +32,7 @@ RUN chmod +x NVIDIA-OptiX-SDK-6.5.0-linux64.sh && mkdir optix && \
     ./NVIDIA-OptiX-SDK-6.5.0-linux64.sh --skip-license --prefix=optix --exclude-subdir
 
 # Mitsuba2 Build
-RUN git clone --recursive https://github.com/mitsuba-renderer/mitsuba2 && cd mitsuba2 && git submodule update --init --recursive
+RUN git clone --recursive https://github.com/PidgeyBE/mitsuba2.git --single-branch --branch pathreparam && cd mitsuba2 && git submodule update --init --recursive
 WORKDIR /app/mitsuba2
 COPY mitsuba.conf mitsuba.conf
 
